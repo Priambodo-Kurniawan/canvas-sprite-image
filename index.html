@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Canvas Sprite Image</title>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <script>
+
+    // position of the frame will be drawn
+    var x = 0;
+    var y = 0;
+
+    var srcX;
+    var srcY;
+
+    var left = true;
+    var speed = 20;
+
+    var sheetWidth = 864;
+    var sheetHeight = 280;
+
+    var character = new Image();
+    character.src = "character.png";
+    character.onload = function () {
+      sheetWidth = this.width;
+      sheetHeight = this.height;
+
+      var cols = 8;
+      var rows = 2;
+
+      var trackRight = 0;
+      var trackLeft = 1;
+
+      var width = sheetWidth / cols;
+      var height = sheetHeight / rows;
+
+      var currentFrame = 0;
+
+      var canvas = document.getElementById('canvas');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      var ctx = canvas.getContext('2d');
+
+      function updateFrame() {
+        currentFrame = ++currentFrame % cols;
+        srcX = currentFrame * width;
+        ctx.clearRect(x, y, width, height);
+
+        if (left && x<canvas.width-width) {
+          srcY = trackRight * height;
+          x += speed;
+        } else {
+          left = false;
+          srcY = trackLeft * height;
+          x -= speed;
+          if (x <= 0) {
+            left = true;
+          }
+        }
+
+      }
+
+      function drawImage() {
+        updateFrame();
+        ctx.drawImage(character, srcX, srcY, width, height, x, y, width, height);
+      }
+
+      setInterval(function () {
+        drawImage();
+      }, 100);
+    }
+
+    
+  </script>
+</body>
+</html>
